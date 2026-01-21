@@ -1,0 +1,18 @@
+{
+  "name": "picker-delivery-checkout-external",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@shoelace-style/shoelace": "^2.20.1",
+    "lit": "^3.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11"
+  }
+}
