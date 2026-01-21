@@ -1,6 +1,7 @@
 {
   "name": "picker-delivery-checkout-external",
   "version": "1.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,6 +13,7 @@
     "lit": "^3.1.0"
   },
   "devDependencies": {
+    "terser": "^5.36.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.11"
   }
