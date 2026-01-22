@@ -1,63 +1,43 @@
-type PickerFormField = 'fullName' | 'phoneNumber' | 'deliveryDate';
+import { DeliveryFormData, FormErrors } from '../types';
 
-type PickerFormErrors = Partial<Record<PickerFormField, string>>;
+export class FormValidator {
+  static validate(data: DeliveryFormData): { isValid: boolean; errors: FormErrors } {
+    const errors: FormErrors = {};
 
-interface PickerFormData {
-  readonly fullName: string;
-  readonly phoneNumber: string;
-  readonly deliveryDate: string;
-}
+    // Validar nombre completo
+    if (!data.fullName.trim()) {
+      errors.fullName = 'El nombre es requerido';
+    } else if (data.fullName.trim().length < 3) {
+      errors.fullName = 'El nombre debe tener al menos 3 caracteres';
+    }
 
-interface PickerFormValidationResult {
-  readonly isValid: boolean;
-  readonly errors: PickerFormErrors;
-}
+    // Validar teléfono
+    if (!data.phoneNumber.trim()) {
+      errors.phoneNumber = 'El teléfono es requerido';
+    } else {
+      const phoneRegex = /^[0-9]{10,}$/;
+      const cleanPhone = data.phoneNumber.replace(/\s+/g, '');
+      if (!phoneRegex.test(cleanPhone)) {
+        errors.phoneNumber = 'El teléfono debe tener al menos 10 dígitos';
+      }
+    }
 
-export class PickerFormValidator {
-  /**
-   * Validates user inputs for the picker form.
-   */
-  public validate(inputData: PickerFormData): PickerFormValidationResult {
-    const errors: PickerFormErrors = {};
-    const normalizedFullName: string = inputData.fullName.trim();
-    const normalizedPhoneNumber: string = inputData.phoneNumber.trim();
-    const normalizedDeliveryDate: string = inputData.deliveryDate.trim();
-    if (normalizedFullName.length === 0) {
-      errors.fullName = 'El nombre es obligatorio.';
-    }
-    if (normalizedPhoneNumber.length === 0) {
-      errors.phoneNumber = 'El teléfono es obligatorio.';
-    }
-    if (!this.isPhoneNumberValid(normalizedPhoneNumber)) {
-      errors.phoneNumber = 'El teléfono no es válido.';
-    }
-    if (normalizedDeliveryDate.length === 0) {
-      errors.deliveryDate = 'La fecha es obligatoria.';
-    }
-    if (!this.isIsoDateValid(normalizedDeliveryDate)) {
-      errors.deliveryDate = 'La fecha no es válida.';
-    }
-    return { isValid: Object.keys(errors).length === 0, errors };
-  }
+    // Validar fecha
+    if (!data.deliveryDate) {
+      errors.deliveryDate = 'La fecha de entrega es requerida';
+    } else {
+      const selectedDate = new Date(data.deliveryDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-  private isPhoneNumberValid(phoneNumber: string): boolean {
-    if (phoneNumber.length === 0) {
-      return true;
+      if (selectedDate < today) {
+        errors.deliveryDate = 'La fecha debe ser hoy o posterior';
+      }
     }
-    const phonePattern: RegExp = /^[+()\d\s-]{7,}$/;
-    return phonePattern.test(phoneNumber);
-  }
 
-  private isIsoDateValid(isoDate: string): boolean {
-    if (isoDate.length === 0) {
-      return true;
-    }
-    const isoDatePattern: RegExp = /^\d{4}-\d{2}-\d{2}$/;
-    if (!isoDatePattern.test(isoDate)) {
-      return false;
-    }
-    const parsedTime: number = Date.parse(isoDate);
-    return Number.isFinite(parsedTime);
+    return {
+      isValid: Object.keys(errors).length === 0,
+      errors
+    };
   }
 }
-

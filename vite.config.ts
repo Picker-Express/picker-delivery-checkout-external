@@ -1,10 +1,11 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  build: {
-    outDir: 'dist',
-    minify: 'terser',
-    target: 'es2020'
+  plugins: [react()],
+  base: '/picker-delivery-checkout-external/', // Cambiar según tu repo de GitHub
+  server: {
+    port: 3000,
   },
-  base: './'
-});
+})
